@@ -1,0 +1,1 @@
+ConvertX is a lightning-fast, fail-safe file conversion web app built with FastAPI and React. It seamlessly converts documents, images, and presentations to PDFs or text. Featuring a smart fallback registry to prevent server crashes and auto-cleanup for zero storage bloat, this open-source architecture is built for ultimate reliability and speed.

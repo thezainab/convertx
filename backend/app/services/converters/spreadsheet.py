@@ -1,7 +1,7 @@
 import csv
 import openpyxl
-import comtypes.client
 import os
+import subprocess
 from app.services.conversion_registry import registry
 
 def xlsx_to_csv(input_path: str, output_path: str) -> bool:
@@ -21,12 +21,9 @@ def xlsx_to_pdf(input_path: str, output_path: str) -> bool:
     try:
         in_path = os.path.abspath(input_path)
         out_path = os.path.abspath(output_path)
-        excel = comtypes.client.CreateObject("Excel.Application")
-        excel.Visible = False
-        wb = excel.Workbooks.Open(in_path)
-        wb.ExportAsFixedFormat(0, out_path)
-        wb.Close(False)
-        excel.Quit()
+        
+        # Cloud/Linux friendly PDF conversion using LibreOffice
+        subprocess.run(['libreoffice', '--headless', '--convert-to', 'pdf', '--outdir', os.path.dirname(out_path), in_path], check=True)
         return True
     except Exception as e:
         print(f"Excel to PDF error: {e}")

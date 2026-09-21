@@ -1,7 +1,7 @@
 import os
 from docx import Document
-from docx2pdf import convert as docx_convert
 from app.services.conversion_registry import registry
+import subprocess
 
 def docx_to_txt(input_path: str, output_path: str) -> bool:
     try:
@@ -18,10 +18,15 @@ def docx_to_pdf(input_path: str, output_path: str) -> bool:
     try:
         in_path = os.path.abspath(input_path)
         out_path = os.path.abspath(output_path)
-        docx_convert(in_path, out_path)
+        
+        # Cloud/Linux friendly PDF conversion using LibreOffice
+        # This will work on Render (Linux) and locally if LibreOffice is installed
+        subprocess.run(['libreoffice', '--headless', '--convert-to', 'pdf', '--outdir', os.path.dirname(out_path), in_path], check=True)
         return True
     except Exception as e:
         print(f"Word to PDF error: {e}")
+        # Note: Render par Word to PDF function ko mukkamal chalane ke liye LibreOffice ki zaroorat hoti hai.
+        # Filhal app ko crash se bachane ke liye yeh safe tareeqa lagaya gaya hai.
         return False
 
 # Dono features register ho gaye

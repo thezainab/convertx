@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { UploadCloud, FileType, CheckCircle, RefreshCcw, ShieldCheck, Zap, Sparkles, Trash2, Download } from 'lucide-react'
 import axios from 'axios'
 
@@ -61,17 +61,21 @@ function App() {
     return [{ value: 'pdf', label: 'PDF Document (.pdf)' }]
   }
 
+  // NAYA FIX: React useEffect hook jo file set hone ke baad khud format update karega
+  useEffect(() => {
+    if (file) {
+      const formats = getAvailableFormats()
+      if (formats.length > 0) {
+        setTargetFormat(formats[0].value)
+      }
+    }
+  }, [file]) // Jab bhi 'file' change hogi, yeh block chalega
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const selectedFile = e.target.files[0]
       setFile(selectedFile)
       setStatus('idle')
-      
-      // Jaise hi file aaye, pehla available format default set kar dein
-      const formats = getAvailableFormats()
-      if (formats.length > 0) {
-        setTargetFormat(formats[0].value)
-      }
     }
   }
 
@@ -91,11 +95,6 @@ function App() {
       const droppedFile = e.dataTransfer.files[0]
       setFile(droppedFile)
       setStatus('idle')
-      
-      const formats = getAvailableFormats()
-      if (formats.length > 0) {
-        setTargetFormat(formats[0].value)
-      }
     }
   }
 
